@@ -1,0 +1,436 @@
+create table Genres (
+idGenre int NOT NULL AUTO_INCREMENT,
+GenreName varchar(45) NOT NULL,
+PRIMARY KEY (idGenre)
+);
+
+create table Authors (
+idAuthor int NOT NULL AUTO_INCREMENT,
+AuthorName varchar(45) NOT NULL,
+PRIMARY KEY (idAuthor)
+);
+
+create table PaymentTypes (
+idPaymentType int NOT NULL AUTO_INCREMENT,
+PaymentType varchar(45) NOT NULL,
+PRIMARY KEY (idPaymentType)
+);
+
+create table SubscriptionTypes (
+idSubscriptionType int NOT NULL AUTO_INCREMENT ,
+SubscriptionName varchar(45) NOT NULL,
+PRIMARY KEY (idSubscriptionType)
+);
+
+create table ClientContacts (
+idClientContact int NOT NULL AUTO_INCREMENT,
+ClientPost varchar(45) NOT NULL,
+ClientPhone varchar(45) NOT NULL,
+PRIMARY KEY (idClientContact)
+);
+
+
+
+create table Clients (
+idClient int NOT NULL AUTO_INCREMENT,
+LoginClient varchar(45) NOT NULL,
+PasswordClient varchar(45) NOT NULL,
+idClientContact int NOT NULL,
+idSubscriptionType int NULL,
+PRIMARY KEY (idClient),
+FOREIGN KEY (idClientContact) REFERENCES ClientContacts (idClientContact)
+ON UPDATE CASCADE ON DELETE RESTRICT,
+FOREIGN KEY (idSubscriptionType) REFERENCES SubscriptionTypes (idSubscriptionType)
+ON UPDATE CASCADE ON DELETE RESTRICT
+);
+
+
+create table Orders (
+idOrder int NOT NULL AUTO_INCREMENT,
+idClient int NOT NULL,
+idPaymentType int NOT NULL,
+OrderDate DATE NOT NULL,
+PRIMARY KEY (idOrder),
+FOREIGN KEY (idClient) REFERENCES Clients (idClient)
+ON UPDATE CASCADE ON DELETE RESTRICT,
+FOREIGN KEY (idPaymentType) REFERENCES PaymentTypes (idPaymentType)
+ON UPDATE CASCADE ON DELETE RESTRICT
+);
+
+create table Books (
+idBook int NOT NULL AUTO_INCREMENT,
+BookName Varchar(45) NOT NULL,
+BookCost int NOT NULL,
+idAuthor int NOT NULL,
+idGenre int NOT NULL,
+PRIMARY KEY (idBook),
+FOREIGN KEY (idAuthor) REFERENCES Authors (idAuthor)
+ON UPDATE CASCADE ON DELETE RESTRICT,
+FOREIGN KEY (idGenre) REFERENCES Genres (idGenre)
+ON UPDATE CASCADE ON DELETE RESTRICT
+);
+
+create table BooksInOrders (
+idBookInOrder int NOT NULL AUTO_INCREMENT,
+idBook int NOT NULL,
+idOrder int NOT NULL,
+PRIMARY KEY (idBookInOrder),
+FOREIGN KEY (idBook) REFERENCES Books (idBook)
+ON UPDATE CASCADE ON DELETE RESTRICT,
+FOREIGN KEY (idOrder) REFERENCES Orders (idOrder)
+ON UPDATE CASCADE ON DELETE RESTRICT
+);
+
+INSERT INTO Genres (GenreName) VALUES
+('Фантастика'),
+('Фентези'),
+('Ужасы'),
+('Детективы'),
+('Классика'),
+('Юмор'),
+('Приключения'
+);
+
+INSERT INTO Authors (AuthorName) VALUES
+('Михайлов Ярослав Николаевич'),
+('Голубев Семён Александрович'),
+('Уткина Анна Ивановна'),
+('Алексеев Демьян Михайлович'),
+('Панков Дамир Андреевич'),
+('Иванов Роберт Артёмович'),
+('Новикова Аделина Михайловна'),
+('Куликова Мирослава Михайловна'),
+('Смирнова Светлана Алексеевна'),
+('Ларин Марк Максимович'
+);
+
+INSERT INTO PaymentTypes (PaymentType) VALUES
+('Наличные'),
+('Карта'),
+('Перевод на счет'),
+('Абонемент'
+);
+
+
+
+INSERT INTO SubscriptionTypes (SubscriptionName) VALUES
+('Платиновый абонемент'),
+('Золотой абонемент'),
+('Серебряный абонемент'),
+('Медный абонемент'
+);
+
+
+INSERT INTO ClientContacts (ClientPost,ClientPhone) VALUES
+('Test@mail.ru', '89850101010'),
+('Test2@mail.ru','89852222222'),
+('Test3@mail.ru','89853333333'),
+('Test5@mail.ru','89855555555'),
+('Test7@mail.ru','89857777777'),
+('Test6@mail.ru','89856666666'),
+('Test9@mail.ru','89859999999'),
+('Test8@mail.ru','89858888888'),
+('Test1@mail.ru','89851111111'
+);
+
+
+INSERT INTO Clients (LoginClient,PasswordClient,idClientContact,idSubscriptionType) VALUES
+('cat', '123n','1','1'),
+('dog','321e','2','2'),
+('turtle','345a','3','3'),
+('panda','543d','5','4'),
+('wolf','567n','4','1'),
+('fox','898bf','7','2'),
+('bear','6h','9','3'),
+('rabbit','htfgh2','6','4'),
+('frog','662','8','1'
+);
+
+INSERT INTO Orders (idClient,idPaymentType,OrderDate) VALUES
+('1', '1','1999-01-24'),
+('2','2','1998-02-25'),
+('3','3','1997-03-21'),
+('6','4','1996-04-22'),
+('5','1','1995-05-23'),
+('4','2','1994-06-26'),
+('7','3','1993-07-27'),
+('9','4','1992-08-28'),
+('8','1','1991-09-29'
+);
+
+INSERT INTO Books (BookName,BookCost,idAuthor,idGenre) VALUES
+('Just', '100','1','1'),
+('Two','200','2','2'),
+('Tables','300','3','3'),
+('To','100','4','4'),
+('Fill','250','5','5'),
+('With','260','9','6'),
+('My','310','7','2'),
+('Magik','400','2','7'),
+('Words','150','1','5'
+);
+
+INSERT INTO BooksInOrders (idBook,idOrder) VALUES
+('1','9'),
+('2','7'),
+('9','7'),
+('4','7'),
+('5','5'),
+('6','4'),
+('7','3'),
+('8','2'),
+('8','1'),
+('8','6'
+);
+
+DELIMITER //
+
+
+SELECT * FROM clients;
+SELECT idClient FROM clients;
+SELECT LoginClient, PasswordClient FROM clients;
+SELECT * FROM books;
+SELECT * FROM clients ORDER BY LoginClient;
+SELECT * FROM clients ORDER BY LoginClient DESC;
+SELECT * FROM clients WHERE idSubscriptionType=1;
+SELECT * FROM clients WHERE idSubscriptionType>1;
+SELECT * FROM clients WHERE idSubscriptionType<3;
+SELECT * FROM clients WHERE idSubscriptionType>=2;
+SELECT * FROM clients WHERE idSubscriptionType<=3;
+SELECT * FROM clients WHERE idSubscriptionType!=2;
+SELECT * FROM clients WHERE idSubscriptionType IS NOT NULL;
+SELECT * FROM clients WHERE idSubscriptionType IS NULL;
+SELECT * FROM clients WHERE idSubscriptionType BETWEEN 1 and 3;
+SELECT * FROM clients WHERE idSubscriptionType IN (1,4);
+SELECT * FROM clients WHERE idSubscriptionType NOT IN (1,4);
+SELECT * FROM clients WHERE LoginClient LIKE '%og%';
+SELECT * FROM clients WHERE LoginClient NOT LIKE '%og%';
+SELECT * FROM clients WHERE LoginClient LIKE 'f%';
+SELECT * FROM clients WHERE LoginClient LIKE '%t';
+SELECT * FROM clients WHERE LoginClient LIKE '_a%';
+SELECT * FROM clients WHERE LoginClient LIKE '_a_';
+
+ALTER TABLE clients ADD COLUMN role varchar(20);
+ALTER TABLE clients ADD COLUMN kol int(10) AFTER PasswordClient, ADD COLUMN rating varchar(20) AFTER kol;
+
+Update clients SET kol=50
+WHERE idClient=1;
+Update clients SET kol=30
+WHERE idClient=2;
+Update clients SET kol=45
+WHERE idClient=3;
+Update clients SET kol=31
+WHERE idClient=4;
+Update clients SET kol=32
+WHERE idClient=5;
+Update clients SET kol=33
+WHERE idClient=6;
+Update clients SET kol=34
+WHERE idClient=7;
+Update clients SET kol=35
+WHERE idClient=8;
+Update clients SET kol=36
+WHERE idClient=9;
+
+
+Update clients SET rating='Профи'
+Where kol>35;
+
+ALTER TABLE clients CHANGE rating reputation varchar(20);
+
+DELETE FROM Clients
+WHERE idClient='2';
+
+DELETE FROM BooksInOrders
+WHERE idBookInOrder='9';
+
+
+
+SELECT idClient, LoginClient, ClientPost, ClientPhone FROM Clients JOIN ClientContacts
+ON Clients.idClientContact=ClientContacts.idClientContact;
+
+SELECT idClient, LoginClient, SubscriptionName, PasswordClient FROM Clients LEFT JOIN SubscriptionTypes
+ON Clients.idSubscriptionType=SubscriptionTypes.idSubscriptionType;
+
+SELECT idOrder, LoginClient, OrderDate, PasswordClient FROM Orders Right JOIN Clients
+ON Orders.idClient=Clients.idClient;
+
+
+SELECT idClient, LoginClient, ClientPost, ClientPhone FROM Clients C JOIN ClientContacts CC
+ON C.idClientContact=CC.idClientContact;
+
+
+(SELECT idClient, LoginClient, ClientPost, ClientPhone FROM Clients JOIN ClientContacts
+ON Clients.idClientContact=ClientContacts.idClientContact
+WHERE Clients.idClient>'4' AND ClientContacts.ClientPhone LIKE '8985%')
+union
+(SELECT idClient, LoginClient, ClientPost, ClientPhone FROM Clients JOIN ClientContacts
+ON Clients.idClientContact=ClientContacts.idClientContact
+WHERE Clients.idClient<'3' AND ClientContacts.ClientPhone='89852222222'
+);
+
+
+(SELECT idClient, LoginClient, ClientPost, ClientPhone FROM Clients JOIN ClientContacts
+ON Clients.idClientContact=ClientContacts.idClientContact
+WHERE Clients.idClient>'4' AND ClientContacts.ClientPhone LIKE '8985%')
+union
+(SELECT idClient, LoginClient, ClientPost, ClientPhone FROM Clients JOIN ClientContacts
+ON Clients.idClientContact=ClientContacts.idClientContact
+WHERE Clients.idClient>'3' AND ClientContacts.ClientPhone='89859999999'
+);
+
+(SELECT idClient, LoginClient, ClientPost, ClientPhone FROM Clients JOIN ClientContacts
+ON Clients.idClientContact=ClientContacts.idClientContact
+WHERE Clients.idClient>'4' AND ClientContacts.ClientPhone LIKE '8985%')
+union ALL
+(SELECT idClient, LoginClient, ClientPost, ClientPhone FROM Clients JOIN ClientContacts
+ON Clients.idClientContact=ClientContacts.idClientContact
+WHERE Clients.idClient>'3' AND ClientContacts.ClientPhone='89859999999'
+);
+
+
+(SELECT idClient, LoginClient, ClientPost, ClientPhone FROM Clients JOIN ClientContacts
+ON Clients.idClientContact=ClientContacts.idClientContact
+WHERE Clients.idClient<='5' AND ClientContacts.ClientPhone Not LIKE '%6%')
+union
+(SELECT idClient, LoginClient, ClientPost, ClientPhone FROM Clients JOIN ClientContacts
+ON Clients.idClientContact=ClientContacts.idClientContact
+WHERE Clients.idClient>='5' AND ClientContacts.ClientPhone LIKE '%6%'
+);
+
+
+SELECT idClient, LoginClient
+From Clients
+WHERE idClientContact IN
+(SELECT idClientContact From ClientContacts WHERE ClientPhone LIKE '%1%'
+);
+
+
+SELECT idClient, LoginClient
+From Clients
+WHERE idClientContact IN
+(SELECT idClientContact From ClientContacts WHERE ClientPost LIKE '%test6%'
+);
+
+
+SELECT idClient, LoginClient
+From Clients
+WHERE idSubscriptionType IN
+(SELECT idSubscriptionType From SubscriptionTypes WHERE SubscriptionName LIKE '%Медный%'
+);
+
+//первое- куда, второе-откуда
+
+
+DELIMITER //
+CREATE FUNCTION BooksCulc(ss INT) RETURNS int(10)
+DETERMINISTIC
+BEGIN
+Return (SELECT COUNT(*) FROM Books WHERE Books.idGenre=ss);
+END//
+DELIMITER ;
+SELECT BooksCulc(5) BooksNum;
+DROP FUNCTION BooksCulc;
+
+
+DELIMITER //
+CREATE FUNCTION func(cl INT) RETURNS int(10)
+DETERMINISTIC
+BEGIN
+Return (SELECT COUNT(*) FROM Orders WHERE Orders.idClient>cl AND Orders.idPaymentType = '4');
+END//
+DELIMITER ;
+SELECT func(1) funcresult;
+DROP FUNCTION func;
+
+
+
+
+DELIMITER //
+CREATE FUNCTION Culc(cu INT) RETURNS int(10)
+DETERMINISTIC
+BEGIN
+Return (SELECT COUNT(*) FROM Clients WHERE Clients.idSubscriptionType = cu);
+END//
+DELIMITER ;
+SELECT Culc(1) Culcresult;
+DROP FUNCTION Culc;
+
+
+DELIMITER //
+CREATE FUNCTION fifth(ss INT) RETURNS int(10)
+DETERMINISTIC
+BEGIN
+Return (SELECT COUNT(*) FROM Books WHERE Books.idGenre = '5' AND Books.idAuthor = ss);
+END//
+DELIMITER ;
+SELECT fifth(1) fifth;
+DROP FUNCTION fifth;
+
+
+
+
+
+DELIMITER //
+CREATE TRIGGER first Before INSERT ON ClientContacts
+FOR EACH ROW BEGIN
+IF (New.ClientPost is null) OR (New.ClientPhone is null) THEN
+INSERT INTO ErrorWithNull (CheckNotNull) values(1);
+END IF;
+END//
+DELIMITER ;
+
+
+DELIMITER //
+CREATE TRIGGER second Before INSERT ON ClientContacts
+FOR EACH ROW BEGIN
+IF (New.ClientPhone NOT LIKE '8985_______') THEN
+INSERT INTO ErrorWithNumber (CheckNumber) values(1);
+END IF;
+END//
+DELIMITER ;
+
+
+DELIMITER //
+
+CREATE TRIGGER third Before INSERT ON ClientContacts
+FOR EACH ROW BEGIN
+IF (New.ClientPost NOT LIKE '%@%.ru') THEN
+INSERT INTO ErrorWithPost (CheckPost) values(1);
+END IF;
+END//
+DELIMITER ;
+
+
+drop table Authors;
+drop table Genres;
+drop table SubscriptionTypes;
+drop table PaymentTypes;
+drop table ClientContacts;
+drop table Clients;
+drop table Books;
+drop table Orders;
+drop table BooksInOrders;
+
+drop database bookslibrary;
+create database bookslibrary;
+use bookslibrary;
+status;
+show tables;
+
+describe Genres;
+
+
+INSERT INTO ClientContacts (ClientPost,ClientPhone)
+VALUES ('wow@yandex.ru','89857887756');
+
+
+SELECT * FROM Authors;
+SELECT * FROM Genres;
+SELECT * FROM SubscriptionTypes;
+SELECT * FROM PaymentTypes;
+SELECT * FROM ClientContacts;
+SELECT * FROM Clients;
+SELECT * FROM Books;
+SELECT * FROM Orders;
+SELECT * FROM BooksInOrders;
